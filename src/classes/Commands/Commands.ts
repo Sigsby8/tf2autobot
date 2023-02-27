@@ -94,7 +94,40 @@ export default class Commands {
 
     async processMessage(steamID: SteamID, message: string): Promise<void> {
         const prefix = this.bot.getPrefix(steamID);
-        const command = CommandParser.getCommand(message.toLowerCase(), prefix);
+        // ADDED BY SIGSBY - Handle easy copy paste commands
+        //
+        //
+        function titleCase(str) {
+            var splitStr = str.toLowerCase().split(' ');
+            for (var i = 0; i < splitStr.length; i++) {
+                // You do not need to check if i is larger than splitStr length, as your for does that for you
+                // Assign it back to the array
+                splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+            }
+            // Directly return the joined string
+            return splitStr.join(' '); 
+        }
+
+        if (message.startsWith('sell_')) {
+            if(message.includes("Non_Craftable") || message.includes("non_craftable")) {
+                message = message.replace("Non_Craftable", "Non-Craftable")
+                message = message.replace("non_craftable", "non-craftable")
+            }
+            var message = '!' + titleCase(message.replace('sell_', 'sell ').replace(/_/g, ' '))
+        }
+        else if (message.startsWith('buy_')) {
+            if(message.includes("Non_Craftable") || message.includes("non_craftable")) {
+                message = message.replace("Non_Craftable", "Non-Craftable")
+                message = message.replace("non_craftable", "non-craftable")
+            }
+            var message = '!' + titleCase(message.replace('buy_', 'buy ').replace(/_/g, ' '))
+        }
+        //
+        //
+        // ADDED BY SIGSBY - Handle easy copy paste commands
+
+        var command = CommandParser.getCommand(message.toLowerCase(), prefix);
+        
         const isAdmin = this.bot.isAdmin(steamID);
         const isWhitelisted = this.bot.isWhitelisted(steamID);
         const isInvalidType = steamID.type === 0;

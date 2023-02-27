@@ -13,6 +13,7 @@ export default class CommandParser {
 
     static removeCommand(message: string): string {
         return message.substring(message.indexOf(' ') + 1);
+        //test
     }
 
     static parseParams(paramString: string): UnknownDictionaryKnownValues {

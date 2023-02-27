@@ -171,10 +171,13 @@ export function getItemAndAmount(
 
         // If we found an item that is different in 3-characters or less
         if (lowestDistance <= 3) {
-            bot.sendMessage(
-                steamID,
-                `❓ I could not find any item names in my pricelist with an exact match for "${name}". Using closest item name match "${matchName}" instead.`
-            );
+
+            //ADDED BY SIGSBY - Commenting out message to clean up %easyCopyPaste%
+
+            // bot.sendMessage(
+            //     steamID,
+            //     `❓ I could not find any item names in my pricelist with an exact match for "${name}". Using closest item name match "${matchName}" instead.`
+            // );
 
             return {
                 amount: amount,

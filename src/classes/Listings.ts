@@ -649,12 +649,21 @@ export default class Listings {
                 .toString();
             const amountTrade = amountCanTrade.toString();
 
+            //ADDED BY SIGSBY - Adds easyCopyPaste variable into listing.
+            if (key === 'buy') {
+                var easyCopyPaste ='sell_' + entry.name.replace(/-/g, "_").replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace(/ /g, '_')
+            }
+            else if (key === 'sell') {
+                var easyCopyPaste ='buy_' + entry.name.replace(/-/g, "_").replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace(/ /g, '_')
+            }
+
             return details
                 .replace(/%price%/g, isShowBoldOnPrice ? boldDetails(price, style) : price)
                 .replace(/%name%/g, entry.id ?? entry.name)
                 .replace(/%max_stock%/g, isShowBoldOnMaxStock ? boldDetails(maxStock, style) : maxStock)
                 .replace(/%current_stock%/g, isShowBoldOnCurrentStock ? boldDetails(currentStock, style) : currentStock)
-                .replace(/%amount_trade%/g, isShowBoldOnAmount ? boldDetails(amountTrade, style) : amountTrade);
+                .replace(/%amount_trade%/g, isShowBoldOnAmount ? boldDetails(amountTrade, style) : amountTrade)
+                .replace(/%easyCopyPaste%/g, easyCopyPaste);
         };
 
         const isCustomBuyNote = entry.note?.buy && intent === 0;
