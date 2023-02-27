@@ -663,7 +663,7 @@ export default class Listings {
                 .replace(/%max_stock%/g, isShowBoldOnMaxStock ? boldDetails(maxStock, style) : maxStock)
                 .replace(/%current_stock%/g, isShowBoldOnCurrentStock ? boldDetails(currentStock, style) : currentStock)
                 .replace(/%amount_trade%/g, isShowBoldOnAmount ? boldDetails(amountTrade, style) : amountTrade)
-                .replace(/%easyCopyPaste%/g, easyCopyPaste);
+                .replace(/%easyCopyPaste%/g, boldDetails(easyCopyPaste, style));
         };
 
         const isCustomBuyNote = entry.note?.buy && intent === 0;
