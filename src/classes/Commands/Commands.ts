@@ -108,20 +108,21 @@ export default class Commands {
             return splitStr.join(' '); 
         }
 
+        message = message.replace("Non_Craftable", "Non-Craftable")
+            .replace("non_craftable", "non-craftable")
+            .replace("72", "'72")
+            .replace("Nuts_n_Bolts", "Nuts n' Bolts")
+            .replace("Kill_a_Watt","Kill-a-Watt")
+            .replace("Terror_Watt", "Terror-Watt")
+            .replace("Squash_n_Twist","Squash n' Twist")
+
         if (message.startsWith('sell_')) {
-            if(message.includes("Non_Craftable") || message.includes("non_craftable")) {
-                message = message.replace("Non_Craftable", "Non-Craftable")
-                message = message.replace("non_craftable", "non-craftable")
-            }
             var message = '!' + titleCase(message.replace('sell_', 'sell ').replace(/_/g, ' '))
         }
+
         else if (message.startsWith('buy_')) {
-            if(message.includes("Non_Craftable") || message.includes("non_craftable")) {
-                message = message.replace("Non_Craftable", "Non-Craftable")
-                message = message.replace("non_craftable", "non-craftable")
-            }
             var message = '!' + titleCase(message.replace('buy_', 'buy ').replace(/_/g, ' '))
-        }
+        }   
         //
         //
         // ADDED BY SIGSBY - Handle easy copy paste commands
