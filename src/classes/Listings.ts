@@ -654,7 +654,7 @@ export default class Listings {
                 var easyCopyPaste ='sell_' + entry.name.replace(/'/g, "").replace(/-[&\/\\#,+()$~%.":*?<>{}]/g, '_').replace(/ /g, '_')
             }
             else if (key === 'sell') {
-                var easyCopyPaste ='buy_' + entry.name.replace(/-/g, "_").replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace(/ /g, '_')
+                var easyCopyPaste ='buy_' + entry.name.replace(/'/g, "").replace(/-[&\/\\#,+()$~%.":*?<>{}]/g, '_').replace(/ /g, '_')
             }
 
             return details
