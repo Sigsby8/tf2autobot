@@ -116,6 +116,8 @@ export default class Commands {
             .replace("Kill_a_Watt","Kill-a-Watt")
             .replace("Terror_Watt", "Terror-Watt")
             .replace("Squash_n_Twist","Squash n' Twist")
+            .replace("Mann_Co__", "Mann Co.")
+            .replace("B_M_O_C_", "B.M.O.C.")
             var message = '!' + titleCase(message.replace('sell_', 'sell ').replace(/_/g, ' '))
         }
 
@@ -127,6 +129,8 @@ export default class Commands {
             .replace("Kill_a_Watt","Kill-a-Watt")
             .replace("Terror_Watt", "Terror-Watt")
             .replace("Squash_n_Twist","Squash n' Twist")
+            .replace("Mann_Co__", "Mann Co.")
+            .replace("B_M_O_C_", "B.M.O.C.")
             var message = '!' + titleCase(message.replace('buy_', 'buy ').replace(/_/g, ' '))
         }   
         //
