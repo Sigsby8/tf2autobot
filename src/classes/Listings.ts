@@ -651,7 +651,7 @@ export default class Listings {
 
             //ADDED BY SIGSBY - Adds easyCopyPaste variable into listing.
             if (key === 'buy') {
-                var easyCopyPaste ='sell_' + entry.name.replace(/'/g, "").replace(/-[&\/\\#,+()$~%.":*?<>{}]/g, '_').replace(/ /g, '_')
+                var easyCopyPaste ='sell_' + entry.name.replace(/'/g, "").replace(/-/g, "_").replace(/./g, "_").replace(/[&\/\\#,+()$~%.":*?<>{}]/g, '_').replace(/ /g, '_')
             }
             else if (key === 'sell') {
                 var easyCopyPaste ='buy_' + entry.name.replace(/'/g, "").replace(/-/g, "_").replace(/./g, "_").replace(/[&\/\\#,+()$~%.":*?<>{}]/g, '_').replace(/ /g, '_')
