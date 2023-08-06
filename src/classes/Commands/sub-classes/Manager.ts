@@ -906,7 +906,7 @@ export default class ManagerCommands {
                 steamID,
                 `❌ You're not running the bot with PM2!` +
                     `\n\nNavigate to your bot folder and run ` +
-                    `[git reset HEAD --hard && git pull && npm install && npm run build] ` +
+                    `[git reset HEAD --hard && git pull && npm install --no-audit && npm run build] ` +
                     `and then restart your bot.`
             );
         }
@@ -945,7 +945,7 @@ export default class ManagerCommands {
                 const exec = (command: string): Promise<void> => {
                     return new Promise((resolve, reject) => {
                         child.exec(command, { cwd }, err => {
-                            if (err && !['npm run build', 'pm2 restart ecosystem.json'].includes(command)) {
+                            if (err && !['npm run build'].includes(command)) {
                                 // not sure why this error always appeared: https://prnt.sc/9eVBx95h9uT_
                                 log.error(`Error on updaterepo (executing ${command}):`, err);
                                 return reject(err);
@@ -969,13 +969,17 @@ export default class ManagerCommands {
                     );
 
                     this.bot.sendMessage(steamID, '⌛ Installing packages...');
-                    await exec(`npm install${process.env.RUN_ON_ANDROID === 'true' ? ' --no-bin-links --force' : ''}`);
+                    await exec(
+                        `npm install${
+                            process.env.RUN_ON_ANDROID === 'true' ? ' --no-bin-links --force' : ''
+                        } --no-audit`
+                    );
 
                     this.bot.sendMessage(steamID, '⌛ Compiling TypeScript codes into JavaScript...');
                     await exec('npm run build');
 
                     this.bot.sendMessage(steamID, '⌛ Restarting...');
-                    await exec('pm2 restart ecosystem.json');
+                    await this.bot.botManager.restartProcess();
                 } catch (err) {
                     this.bot.sendMessage(steamID, `❌ Error while updating the bot: ${JSON.stringify(err)}`);
                     // Bring back to online
