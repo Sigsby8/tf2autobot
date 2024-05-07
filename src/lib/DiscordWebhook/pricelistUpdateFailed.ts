@@ -1,23 +1,21 @@
 import { sendWebhook } from './utils';
 import { Webhook } from './interfaces';
-import log from '../../lib/logger';
-import { GetItemPriceResponse } from '../IPricer';
+import log from '../logger';
+import { GetItemPriceResponse } from '../../classes/IPricer';
 import * as timersPromises from 'timers/promises';
 import { UnknownDictionary } from '../../types/common';
-import Options from '../Options';
-import { BotInfo } from '../MyHandler/MyHandler';
+import Options from '../../classes/Options';
 
 export default function sendFailedPriceUpdate(
     data: GetItemPriceResponse,
     err: Error,
     isCustomPricer: boolean,
-    options: Options,
-    botInfo: BotInfo
+    options: Options
 ): void {
     const opt = options.discordWebhook;
     const priceUpdate: Webhook = {
-        username: opt.displayName || botInfo.name,
-        avatar_url: opt.avatarURL || botInfo.avatarURL,
+        username: opt.displayName,
+        avatar_url: opt.avatarURL,
         content: '',
         embeds: [
             {

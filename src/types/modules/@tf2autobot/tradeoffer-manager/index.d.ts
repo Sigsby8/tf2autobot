@@ -27,8 +27,6 @@ declare module '@tf2autobot/tradeoffer-manager' {
 
         apiKey: string | null;
 
-        accessToken: string | null;
-
         pollInterval: number;
 
         getUserInventoryContents(

@@ -48,7 +48,8 @@
             "enable": false
         },
         "reputationCheck": {
-            "checkMptfBanned": false
+            "checkMptfBanned": false,
+            "reptfAsPrimarySource": false
         },
         "pricecheckAfterTrade": {
             "enable": true
@@ -116,9 +117,6 @@
         },
         "priceAge": {
             "maxInSeconds": 28800
-        },
-        "rewriteFile": {
-            "count": 1
         }
     },
     "bypass": {

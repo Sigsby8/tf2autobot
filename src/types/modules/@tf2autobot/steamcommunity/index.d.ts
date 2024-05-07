@@ -28,15 +28,8 @@ declare module '@tf2autobot/steamcommunity' {
 
         getSessionID(): string;
 
-        getWebApiKey(callback: (err?: Error, key?: string) => void);
-
-        createWebApiKey(
-            options: { domain: string; identitySecret?: string; requestID?: string },
-            callback: (
-                err?: Error,
-                result?: { confirmationRequired: boolean; apiKey: string; finalizeOptions: Record<string, any> }
-            ) => void
-        );
+        // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+        getWebAPIKey(domain: string, callback: (err?: Error, key?: string) => void);
 
         setCookies(cookies: string[]): void;
 

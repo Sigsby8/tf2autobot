@@ -1,3 +1,4 @@
+import timersPromises from 'timers/promises';
 import Currencies from '@tf2autobot/tf2-currencies';
 import PricesTfSocketManager from './prices-tf-socket-manager';
 import IPricer, {
@@ -7,13 +8,11 @@ import IPricer, {
     PricerOptions,
     RequestCheckResponse
 } from '../../../classes/IPricer';
-import PricesTfApi, { PricesTfGetPricesResponse, PricesTfItem, PricesTfItemMessageEvent } from './prices-tf-api';
+import PricesTfApi, { PricesTfItem, PricesTfItemMessageEvent } from './prices-tf-api';
 import log from '../../logger';
 
 export default class PricesTfPricer implements IPricer {
     private socketManager: PricesTfSocketManager;
-
-    private attempts = 0;
 
     public constructor(private api: PricesTfApi) {
         this.socketManager = new PricesTfSocketManager(api);
@@ -63,34 +62,15 @@ export default class PricesTfPricer implements IPricer {
         let totalPages = 0;
 
         let delay = 0;
-        const minDelay = 100;
-        let response: PricesTfGetPricesResponse;
-
-        log.debug('Requesting pricelist pages...');
+        const minDelay = 200;
 
         do {
-            await new Promise(resolve => setTimeout(resolve, delay));
+            await timersPromises.setTimeout(delay);
             const start = new Date().getTime();
-
-            try {
-                log.debug(`Getting page ${currentPage}${totalPages === 0 ? '' : ` of ${totalPages}`}...`);
-                response = await this.api.getPricelistPage(currentPage);
-                currentPage++;
-                totalPages = response.meta.totalPages;
-            } catch (e) {
-                if (currentPage > 1) {
-                    await new Promise(resolve => setTimeout(resolve, 60 * 1000));
-                    continue;
-                } else {
-                    if (this.attempts < 3) {
-                        this.attempts++;
-                        return this.getPricelist();
-                    }
-
-                    this.attempts = 0;
-                    throw e;
-                }
-            }
+            log.debug('Requesting pricelist pages...');
+            const response = await this.api.getPricelistPage(currentPage);
+            totalPages = response.meta.totalPages;
+            currentPage++;
 
             prices = prices.concat(response.items);
             const time = new Date().getTime() - start;

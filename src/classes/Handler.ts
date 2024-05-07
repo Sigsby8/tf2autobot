@@ -2,7 +2,7 @@
 
 import SteamID from 'steamid';
 import TradeOfferManager, { PollData, Meta, CustomError } from '@tf2autobot/tradeoffer-manager';
-import Bot from './Bot';
+import Bot, { SteamTokens } from './Bot';
 import { Entry, PricesDataObject, PricesObject } from './Pricelist';
 import { Blocked } from './MyHandler/interfaces';
 
@@ -47,7 +47,7 @@ export default abstract class Handler {
      * Called when a new login key has been issued
      * @param loginKey - The new login key
      */
-    abstract onRefreshToken(token: string): void;
+    abstract onLoginToken(loginToken: SteamTokens): void;
 
     /**
      * Called when a new trade offer is being processed
@@ -102,6 +102,14 @@ export default abstract class Handler {
      * @param wait - Milliseconds that the bot will wait
      */
     onLoginThrottle(wait: number): void {
+        // empty function
+    }
+
+    /**
+     * Called when a login attempt has failed
+     * @param err - Error object
+     */
+    onLoginError(err: CustomError): void {
         // empty function
     }
 

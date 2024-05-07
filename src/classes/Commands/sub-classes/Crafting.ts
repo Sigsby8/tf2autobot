@@ -12,10 +12,6 @@ import {
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
-const classes = ['scout', 'soldier', 'pyro', 'demoman', 'heavy', 'engineer', 'medic', 'sniper', 'spy'];
-const slotType = ['primary', 'secondary', 'melee', 'pda2'];
-const combineToken = classes.concat(slotType);
-
 export default class CraftingCommands {
     private craftWeaponsBySlot: CraftWeaponsBySlot;
 
@@ -51,17 +47,19 @@ export default class CraftingCommands {
             return this.getCraftTokenInfo(steamID);
         }
 
-        if (parts.length < 2) {
+        if (parts.length < 3) {
             return this.bot.sendMessage(
                 steamID,
-                '❌ Wrong syntax. Correct syntax: !craftToken <tokenName> <amount>' +
-                    '\n - TokenName: one of the 9 TF2 class characters, or "primary"/"secondary"/"melee"/"pda2" slot' +
+                '❌ Wrong syntax. Correct syntax: !craftToken <tokenType> <subTokenType> <amount>' +
+                    '\n - tokenType: "class" or "slot"' +
+                    '\n - subTokenType: one of the 9 TF2 class characters if TokenType is class, or "primary"/"secondary"/"melee"/"pda2" if TokenType is slot' +
                     '\n - amount: Must be an integer, or "max"'
             );
         }
 
-        const tokenName = parts[0];
-        const amount: number | 'max' = parts[1] === 'max' ? 'max' : parseInt(parts[1]);
+        const tokenType = parts[0];
+        const subTokenType = parts[1];
+        const amount: number | 'max' = parts[2] === 'max' ? 'max' : parseInt(parts[2]);
 
         if (amount !== 'max') {
             if (isNaN(amount)) {
@@ -69,29 +67,36 @@ export default class CraftingCommands {
             }
         }
 
-        if (!combineToken.includes(tokenName)) {
+        if (!['class', 'slot'].includes(tokenType)) {
+            return this.bot.sendMessage(steamID, '❌ tokenType must only be either "class" or "slot"!');
+        }
+
+        const classes = ['scout', 'soldier', 'pyro', 'demoman', 'heavy', 'engineer', 'medic', 'sniper', 'spy'];
+        const slotType = ['primary', 'secondary', 'melee', 'pda2'];
+
+        if (tokenType === 'class' && !classes.includes(subTokenType)) {
             return this.bot.sendMessage(
                 steamID,
-                '❌ Invalid token name!' +
-                    '\n• Slot: primary/secondary/melee/pda2' +
-                    '\n• Classes: scout/soldier/pyro/demoman/heavy/engineer/medic/sniper/spy'
+                '❌ subTokenType must be one of 9 TF2 class character since your tokenType is "class"!'
+            );
+        } else if (tokenType === 'slot' && !slotType.includes(subTokenType)) {
+            return this.bot.sendMessage(
+                steamID,
+                '❌ subTokenType must only be either "primary", "secondary", "melee", or "pda2" since your tokenType is "slot"!'
             );
         }
 
-        let isSlotToken = false;
-
-        if (slotType.includes(tokenName)) {
+        if (tokenType === 'slot') {
             // only load on demand
-            isSlotToken = true;
             this.defineCraftWeaponsBySlots();
         }
 
         const assetids: string[] = [];
 
         const craftableItems = this.bot.inventoryManager.getInventory.getCurrencies(
-            !isSlotToken
-                ? this.bot.craftWeaponsByClass[tokenName as ClassesForCraftableWeapons]
-                : this.craftWeaponsBySlot[tokenName as SlotsForCraftableWeapons],
+            tokenType === 'class'
+                ? this.bot.craftWeaponsByClass[subTokenType as ClassesForCraftableWeapons]
+                : this.craftWeaponsBySlot[subTokenType as SlotsForCraftableWeapons],
             false
         );
 
@@ -110,22 +115,21 @@ export default class CraftingCommands {
 
         const availableAmount = assetids.length;
         const amountCanCraft = Math.floor(availableAmount / 3);
-        const capTokenName = tokenName === 'pda2' ? 'PDA2' : capitalize(tokenName);
-        const tokenType = isSlotToken ? 'slot' : 'class';
         const capTokenType = capitalize(tokenType);
+        const capSubTokenType = subTokenType === 'pda2' ? 'PDA2' : capitalize(subTokenType);
 
         if (amount === 'max' && amountCanCraft === 0) {
             return this.bot.sendMessage(
                 steamID,
-                `❌ Unable to craft ${capTokenType} Token - ${capTokenName} since I only have ${availableAmount} of ${capTokenName} ${capTokenType} items.`
+                `❌ Unable to craft ${capTokenType} Token - ${capSubTokenType} since I only have of ${capSubTokenType} ${tokenType} items.`
             );
         }
 
         if (amount !== 'max' && amount > amountCanCraft) {
             return this.bot.sendMessage(
                 steamID,
-                `❌ I can only craft ${amountCanCraft} ${capTokenType} Token - ${capTokenName} at the moment, since I only ` +
-                    `have ${availableAmount} of ${capTokenName} ${capTokenType} items.`
+                `❌ I can only craft ${amountCanCraft} ${capTokenType} Token - ${capSubTokenType} at the moment, since I only ` +
+                    `have ${availableAmount} of ${capSubTokenType} ${tokenType} items.`
             );
         }
 
@@ -137,10 +141,10 @@ export default class CraftingCommands {
         const amountToCraft = amount === 'max' ? amountCanCraft : amount;
         for (let i = 0; i < amountToCraft; i++) {
             const assetidsToCraft = assetids.splice(0, 3);
-            this.bot.tf2gc.craftToken(assetidsToCraft, tokenType as TokenType, tokenName as SubTokenType, err => {
+            this.bot.tf2gc.craftToken(assetidsToCraft, tokenType as TokenType, subTokenType as SubTokenType, err => {
                 if (err) {
                     log.debug(
-                        `Error crafting ${assetidsToCraft.join(', ')} for ${capTokenType} Token - ${capTokenName}`
+                        `Error crafting ${assetidsToCraft.join(', ')} for ${capTokenType} Token - ${capSubTokenType}`
                     );
                     crafted--;
                 }
@@ -159,13 +163,13 @@ export default class CraftingCommands {
                     if (crafted < amountToCraft) {
                         return this.bot.sendMessage(
                             steamID,
-                            `✅ Successfully crafted ${crafted} ${capTokenType} Token - ${capTokenName} (there were some error while crafting).`
+                            `✅ Successfully crafted ${crafted} ${capTokenType} Token - ${capSubTokenType} (there were some error while crafting).`
                         );
                     }
 
                     return this.bot.sendMessage(
                         steamID,
-                        `✅ Successfully crafted ${crafted} ${capTokenType} Token - ${capTokenName}!`
+                        `✅ Successfully crafted ${crafted} ${capTokenType} Token - ${capSubTokenType}!`
                     );
                 }
             });

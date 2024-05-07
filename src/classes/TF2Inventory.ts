@@ -99,22 +99,13 @@ export default class TF2Inventory {
 
     private fetch(): Promise<void> {
         return new Promise((resolve, reject) => {
-            const params: {
-                steamid: string;
-                key?: string;
-                access_token?: string;
-            } = { steamid: this.getSteamID.toString() };
-
-            if (this.manager.apiKey) {
-                params.key = this.manager.apiKey;
-            } else {
-                params.access_token = this.manager.accessToken;
-            }
-
             void axios({
                 url: 'https://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/',
                 method: 'GET',
-                params
+                params: {
+                    key: this.manager.apiKey,
+                    steamid: this.getSteamID.toString()
+                }
             })
                 .then(response => {
                     const body = response.data as GetPlayerItems;
