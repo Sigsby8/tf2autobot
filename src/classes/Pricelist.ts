@@ -1125,7 +1125,6 @@ export default class Pricelist extends EventEmitter {
         if (data.source !== 'bptf') {
             return;
         }
-        console.log('Received price: ', data);
         const match = this.getPrice({ priceKey: data.sku });
         const opt = this.bot.options;
         const dw = opt.discordWebhook.priceUpdate;
