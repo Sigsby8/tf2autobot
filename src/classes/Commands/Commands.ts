@@ -119,6 +119,7 @@ export default class Commands {
             .replace("Mann_Co__", "Mann Co.")
             .replace("B_M_O_C_", "B.M.O.C.")
             .replace("Taunt_The_Scaredy_cat_", "Taunt: The Scaredy-cat!")
+            .replace("Taunt_Cheers_", "Taunt: Cheers!")
             var message = '!' + titleCase(message.replace('sell_', 'sell ').replace(/_/g, ' '))
         }
 
@@ -133,6 +134,7 @@ export default class Commands {
             .replace("Mann_Co__", "Mann Co.")
             .replace("B_M_O_C_", "B.M.O.C.")
             .replace("Taunt_The_Scaredy_cat_", "Taunt: The Scaredy-cat!")
+            .replace("Taunt_Cheers_", "Taunt: Cheers!")
             var message = '!' + titleCase(message.replace('buy_', 'buy ').replace(/_/g, ' '))
         }   
         //
