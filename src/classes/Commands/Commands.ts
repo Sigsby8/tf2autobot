@@ -102,45 +102,45 @@ export default class Commands {
             for (var i = 0; i < splitStr.length; i++) {
                 // You do not need to check if i is larger than splitStr length, as your for does that for you
                 // Assign it back to the array
-                splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+                splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
             }
             // Directly return the joined string
-            return splitStr.join(' '); 
+            return splitStr.join(' ');
         }
 
         if (message.startsWith('sell_')) {
-            message = message.replace("Non_Craftable", "Non-Craftable")
-            .replace("non_craftable", "non-craftable")
-            .replace("72", "'72")
-            .replace("Nuts_n_Bolts", "Nuts n' Bolts")
-            .replace("Kill_a_Watt","Kill-a-Watt")
-            .replace("Terror_Watt", "Terror-Watt")
-            .replace("Squash_n_Twist","Squash n' Twist")
-            .replace("Mann_Co__", "Mann Co.")
-            .replace("B_M_O_C_", "B.M.O.C.")
-            .replace("Taunt_The_Scaredy_cat_", "Taunt: The Scaredy-cat!")
-            var message = '!' + titleCase(message.replace('sell_', 'sell ').replace(/_/g, ' '))
+            message = message
+                .replace('Non_Craftable', 'Non-Craftable')
+                .replace('non_craftable', 'non-craftable')
+                .replace('72', "'72")
+                .replace('Nuts_n_Bolts', "Nuts n' Bolts")
+                .replace('Kill_a_Watt', 'Kill-a-Watt')
+                .replace('Terror_Watt', 'Terror-Watt')
+                .replace('Squash_n_Twist', "Squash n' Twist")
+                .replace('Mann_Co__', 'Mann Co.')
+                .replace('B_M_O_C_', 'B.M.O.C.')
+                .replace('Taunt_The_Scaredy_cat_', 'Taunt: The Scaredy-cat!');
+            var message = '!' + titleCase(message.replace('sell_', 'sell ').replace(/_/g, ' '));
+        } else if (message.startsWith('buy_')) {
+            message = message
+                .replace('Non_Craftable', 'Non-Craftable')
+                .replace('non_craftable', 'non-craftable')
+                .replace('72', "'72")
+                .replace('Nuts_n_Bolts', "Nuts n' Bolts")
+                .replace('Kill_a_Watt', 'Kill-a-Watt')
+                .replace('Terror_Watt', 'Terror-Watt')
+                .replace('Squash_n_Twist', "Squash n' Twist")
+                .replace('Mann_Co__', 'Mann Co.')
+                .replace('B_M_O_C_', 'B.M.O.C.')
+                .replace('Taunt_The_Scaredy_cat_', 'Taunt: The Scaredy-cat!');
+            var message = '!' + titleCase(message.replace('buy_', 'buy ').replace(/_/g, ' '));
         }
-
-        else if (message.startsWith('buy_')) {
-            message = message.replace("Non_Craftable", "Non-Craftable")
-            .replace("non_craftable", "non-craftable")
-            .replace("72", "'72")
-            .replace("Nuts_n_Bolts", "Nuts n' Bolts")
-            .replace("Kill_a_Watt","Kill-a-Watt")
-            .replace("Terror_Watt", "Terror-Watt")
-            .replace("Squash_n_Twist","Squash n' Twist")
-            .replace("Mann_Co__", "Mann Co.")
-            .replace("B_M_O_C_", "B.M.O.C.")
-            .replace("Taunt_The_Scaredy_cat_", "Taunt: The Scaredy-cat!")
-            var message = '!' + titleCase(message.replace('buy_', 'buy ').replace(/_/g, ' '))
-        }   
         //
         //
         // ADDED BY SIGSBY - Handle easy copy paste commands
 
         var command = CommandParser.getCommand(message.toLowerCase(), prefix);
-        
+
         const isAdmin = this.bot.isAdmin(steamID);
         const isWhitelisted = this.bot.isWhitelisted(steamID);
         const isInvalidType = steamID.type === 0;
@@ -239,6 +239,8 @@ export default class Commands {
                 await this.pManager.addCommand(steamID, message);
             } else if (command === 'addbulk' && isAdmin) {
                 void this.pManager.addbulkCommand(steamID, message);
+            } else if (command === 'price_history' && isAdmin) {
+                void this.pManager.getHistoryCommand(steamID, message);
             } else if (command === 'update' && isAdmin) {
                 void this.pManager.updateCommand(steamID, message, prefix);
             } else if (command === 'updatebulk' && isAdmin) {

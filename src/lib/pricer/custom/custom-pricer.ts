@@ -2,12 +2,17 @@ import Currencies from '@tf2autobot/tf2-currencies';
 import CustomPricerSocketManager from './custom-pricer-socket-manager';
 import IPricer, {
     GetItemPriceResponse,
+    GetPriceHistoryResponse,
     GetPricelistResponse,
     Item,
     PricerOptions,
     RequestCheckResponse
 } from '../../../classes/IPricer';
-import CustomPricerApi, { CustomPricesGetItemPriceResponse, CustomPricesItemMessageEvent } from './custom-pricer-api';
+import CustomPricerApi, {
+    CustomPricesGetItemPriceResponse,
+    CustomPricesGetPriceHistoryResponse,
+    CustomPricesItemMessageEvent
+} from './custom-pricer-api';
 
 export default class CustomPricer implements IPricer {
     private socketManager: CustomPricerSocketManager;
@@ -47,9 +52,18 @@ export default class CustomPricer implements IPricer {
         };
     }
 
+    public parsePriceHistoryResponse(response: CustomPricesGetPriceHistoryResponse): GetPriceHistoryResponse {
+        return response;
+    }
+
     async getPrice(sku: string): Promise<GetItemPriceResponse> {
         const response = await this.api.getPrice(sku);
         return this.parsePricesGetItemPriceResponse(response);
+    }
+
+    async getPriceHistory(sku: string): Promise<GetPriceHistoryResponse> {
+        const response = await this.api.getPriceHistory(sku);
+        return this.parsePriceHistoryResponse(response);
     }
 
     async getPricelist(): Promise<GetPricelistResponse> {

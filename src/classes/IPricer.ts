@@ -19,6 +19,8 @@ export default interface IPricer {
 
     getPrice(sku: string): Promise<GetItemPriceResponse>;
 
+    getPriceHistory?(sku: string): Promise<GetPriceHistoryResponse>;
+
     getPricelist(): Promise<GetPricelistResponse>;
 
     get isPricerConnecting(): boolean;
@@ -63,6 +65,20 @@ export interface GetItemPriceResponse {
     buy?: Currencies;
     sell?: Currencies;
     message?: string;
+}
+
+export interface GetPriceHistoryResponse {
+    priceHistory: PriceHistoryEntry[];
+}
+
+export interface PriceHistoryEntry {
+    id: number;
+    sku: string;
+    buy_keys: number;
+    buy_metal: number;
+    sell_keys: number;
+    sell_metal: number;
+    timestamp: string;
 }
 
 export interface Sale {

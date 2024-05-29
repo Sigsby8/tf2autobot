@@ -53,6 +53,20 @@ export interface CustomPricesGetItemPriceResponse extends CustomPricesResponse {
     message?: string;
 }
 
+export interface CustomPricesGetPriceHistoryResponse extends CustomPricesResponse {
+    priceHistory: PriceHistoryEntry[];
+}
+
+export interface PriceHistoryEntry {
+    id: number;
+    sku: string;
+    buy_keys: number;
+    buy_metal: number;
+    sell_keys: number;
+    sell_metal: number;
+    timestamp: string;
+}
+
 export interface PricesSale {
     id: string;
     steamid: string;
@@ -119,6 +133,10 @@ export default class CustomPricerApi {
 
     getPrice(sku: string): Promise<CustomPricesGetItemPriceResponse> {
         return this.apiRequest('GET', `/items/${sku}`, { src: 'bptf' });
+    }
+
+    getPriceHistory(sku: string): Promise<CustomPricesGetPriceHistoryResponse> {
+        return this.apiRequest('GET', `/price-history/${sku}`, { src: 'bptf' });
     }
 
     getPricelist(): Promise<CustomPricesGetPricelistResponse> {
