@@ -165,9 +165,7 @@ export default class DiscordBot {
             }
         } else if (typeof messageToSend === 'object' && Buffer.isBuffer(messageToSend)) {
             const attachment = new AttachmentBuilder(messageToSend, { name: 'chart.png' });
-            const key = this.bot.pricelist.getKeyPrices;
-            const keyRate = key.sell.toString();
-            origMessage.channel.send({ content: `🔑 Key Rate: ${keyRate}`, files: [attachment] });
+            origMessage.channel.send({ files: [attachment] });
             log.info(`Graph sent to ${origMessage.author.tag} (${origMessage.author.id})`);
         }
     }
