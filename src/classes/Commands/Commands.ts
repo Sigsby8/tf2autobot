@@ -241,8 +241,8 @@ export default class Commands {
                 await this.pManager.addCommand(steamID, message);
             } else if (command === 'addbulk' && isAdmin) {
                 void this.pManager.addbulkCommand(steamID, message);
-            } else if (command === 'price_history' && isAdmin) {
-                void this.pManager.getHistoryCommand(steamID, message);
+                // } else if (command === 'price_history' && isAdmin) {
+                //     void this.pManager.getHistoryCommand(steamID, message);
             } else if (command === 'update' && isAdmin) {
                 void this.pManager.updateCommand(steamID, message, prefix);
             } else if (command === 'updatebulk' && isAdmin) {
@@ -313,6 +313,8 @@ export default class Commands {
                 void this.review.forceAction(steamID, message, command as ForceAction);
             } else if (command === 'offerinfo' && isAdmin) {
                 this.review.offerInfo(steamID, message, prefix);
+            } else if (command === 'price_history' && isAdmin) {
+                this.request.priceHistoryCommand(steamID, message);
             } else if (command === 'pricecheck' && isAdmin) {
                 this.request.pricecheckCommand(steamID, message);
             } else if (command === 'pricecheckall' && isAdmin) {

@@ -1545,7 +1545,7 @@ export default class Bot {
         });
     }
 
-    sendMessage(steamID: SteamID | string, message: string): void {
+    sendMessage(steamID: SteamID | string, message: string | Buffer): void {
         if (steamID instanceof SteamID && steamID.redirectAnswerTo) {
             const origMessage = steamID.redirectAnswerTo;
             if (origMessage instanceof DiscordMessage && this.discordBot) {
@@ -1558,18 +1558,21 @@ export default class Bot {
 
         const steamID64 = steamID.toString();
         const friend = this.friends.getFriend(steamID64);
-
-        if (!friend) {
-            // If not friend, we send message with chatMessage
-            this.client.chatMessage(steamID, message);
-            this.getPartnerDetails(steamID64)
-                .then(name => {
-                    log.info(`Message sent to ${name} (${steamID64} - not friend): ${message}`);
-                })
-                .catch(err => {
-                    log.error(`Error while getting ${steamID64} details`, err);
-                });
-            return;
+        if (typeof message === 'string') {
+            if (!friend) {
+                // If not friend, we send message with chatMessage
+                this.client.chatMessage(steamID, message);
+                this.getPartnerDetails(steamID64)
+                    .then(name => {
+                        log.info(`Message sent to ${name} (${steamID64} - not friend): ${message}`);
+                    })
+                    .catch(err => {
+                        log.error(`Error while getting ${steamID64} details`, err);
+                    });
+                return;
+            }
+        } else if (typeof message === 'object' && Buffer.isBuffer(message)) {
+            message = 'This command is not supported in steam chat. Please use discord.';
         }
 
         // else, we use the new chat.sendFriendMessage

@@ -54,7 +54,7 @@ export interface CustomPricesGetItemPriceResponse extends CustomPricesResponse {
 }
 
 export interface CustomPricesGetPriceHistoryResponse extends CustomPricesResponse {
-    priceHistory: PriceHistoryEntry[];
+    priceHistory?: PriceHistoryEntry[];
 }
 
 export interface PriceHistoryEntry {

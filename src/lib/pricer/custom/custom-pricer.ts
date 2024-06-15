@@ -52,10 +52,6 @@ export default class CustomPricer implements IPricer {
         };
     }
 
-    public parsePriceHistoryResponse(response: CustomPricesGetPriceHistoryResponse): GetPriceHistoryResponse {
-        return response;
-    }
-
     async getPrice(sku: string): Promise<GetItemPriceResponse> {
         const response = await this.api.getPrice(sku);
         return this.parsePricesGetItemPriceResponse(response);
@@ -63,7 +59,17 @@ export default class CustomPricer implements IPricer {
 
     async getPriceHistory(sku: string): Promise<GetPriceHistoryResponse> {
         const response = await this.api.getPriceHistory(sku);
-        return this.parsePriceHistoryResponse(response);
+        return {
+            priceHistory: response.priceHistory.map(i => ({
+                id: i.id,
+                sku: i.sku,
+                buy_keys: i.buy_keys,
+                buy_metal: i.buy_metal,
+                sell_keys: i.sell_keys,
+                sell_metal: i.sell_metal,
+                timestamp: i.timestamp
+            }))
+        };
     }
 
     async getPricelist(): Promise<GetPricelistResponse> {

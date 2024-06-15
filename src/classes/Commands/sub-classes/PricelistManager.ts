@@ -32,18 +32,6 @@ export default class PricelistManagerCommands {
         this.bot = bot;
     }
 
-    async getHistoryCommand(steamID: SteamID, message: string): Promise<void> {
-        const params = CommandParser.parseParams(CommandParser.removeCommand(removeLinkProtocol(message)));
-        if (params.sku) {
-            try {
-                const history = await this.priceSource.getPriceHistory(params.sku);
-                this.bot.sendMessage(steamID, JSON.stringify(history));
-            } catch (err) {
-                console.error('Error fetching price history:', err);
-            }
-        }
-    }
-
     async addCommand(steamID: SteamID, message: string): Promise<void> {
         const params = CommandParser.parseParams(CommandParser.removeCommand(removeLinkProtocol(message)));
         if (params.enabled === undefined) {

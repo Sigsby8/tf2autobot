@@ -7,13 +7,15 @@ import {
     DiscordAPIError,
     Snowflake,
     ActivityType,
-    ApplicationCommandType
+    ApplicationCommandType,
+    AttachmentBuilder
 } from 'discord.js';
 import log from '../lib/logger';
 import Options from './Options';
 import Bot from './Bot';
 import SteamID from 'steamid';
 import { uptime } from '../lib/tools/time';
+import { GetPriceHistoryResponse } from './IPricer';
 
 export default class DiscordBot {
     readonly client: Client;
@@ -136,29 +138,37 @@ export default class DiscordBot {
         }
     }
 
-    public sendAnswer(origMessage: Message, messageToSend: string): void {
-        messageToSend = messageToSend.trim();
-        const formattedMessage = DiscordBot.reformat(messageToSend);
+    public sendAnswer(origMessage: Message, messageToSend: string | Buffer): void {
+        if (typeof messageToSend === 'string') {
+            messageToSend = messageToSend.trim();
+            const formattedMessage = DiscordBot.reformat(messageToSend);
 
-        if (messageToSend == formattedMessage) {
-            const lines = messageToSend.split('\n');
-            let partialMessage = '';
-            for (let i = 0; i < lines.length; i += 1) {
-                const line = lines[i];
-                if (partialMessage.length + 1 + line.length <= this.MAX_MESSAGE_LENGTH) {
-                    if (i == 0) {
-                        partialMessage += line;
+            if (messageToSend == formattedMessage) {
+                const lines = messageToSend.split('\n');
+                let partialMessage = '';
+                for (let i = 0; i < lines.length; i += 1) {
+                    const line = lines[i];
+                    if (partialMessage.length + 1 + line.length <= this.MAX_MESSAGE_LENGTH) {
+                        if (i == 0) {
+                            partialMessage += line;
+                        } else {
+                            partialMessage += '\n' + line;
+                        }
                     } else {
-                        partialMessage += '\n' + line;
+                        this.sendMessage(origMessage, partialMessage);
+                        partialMessage = line; // Error is still possible if any line is longer than limit
                     }
-                } else {
-                    this.sendMessage(origMessage, partialMessage);
-                    partialMessage = line; // Error is still possible if any line is longer than limit
                 }
+                this.sendMessage(origMessage, partialMessage);
+            } else {
+                this.sendMessage(origMessage, formattedMessage); // TODO: normal parsing of markup things
             }
-            this.sendMessage(origMessage, partialMessage);
-        } else {
-            this.sendMessage(origMessage, formattedMessage); // TODO: normal parsing of markup things
+        } else if (typeof messageToSend === 'object' && Buffer.isBuffer(messageToSend)) {
+            const attachment = new AttachmentBuilder(messageToSend, { name: 'chart.png' });
+            const key = this.bot.pricelist.getKeyPrices;
+            const keyRate = key.sell.toString();
+            origMessage.channel.send({ content: `🔑 Key Rate: ${keyRate}`, files: [attachment] });
+            log.info(`Graph sent to ${origMessage.author.tag} (${origMessage.author.id})`);
         }
     }
 
