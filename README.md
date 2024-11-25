@@ -1,5 +1,8 @@
 # TF2Autobot
+This fork implements an extra backpack.tf listing option: %easyCopyPaste%.
 
+Example listing description:
+`Selling for 35 ref. buy_killstreak_connivers_kunai`
 ## How to merge Original repo
 ```
 git fetch upstream
